@@ -19,6 +19,12 @@ jobs:
           docker build -t user-etl-pipeline:latest .
         # This command builds the image and makes it available in your local Docker Desktop
 
+       # --- THIS IS THE NEW, CRUCIAL STEP ---
+      - name: Load Docker Image into Kind Cluster
+        run: |
+          kind load docker-image user-etl-pipeline:latest
+        # This command makes the image visible to your Kubernetes nodes
+        
       - name: Deploy to Local Kubernetes
         run: |
           kubectl apply -f kubernetes/etl-cronjob.yaml
