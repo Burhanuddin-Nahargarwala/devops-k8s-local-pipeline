@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: daily-user-etl-job
+spec:
+  # Cron schedule: "At 0 minutes past every hour"
+  # You can change this. For testing, "*/2 * * * *" runs every 2 minutes.
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: etl-processor
+            # IMPORTANT: The image name is simple because it will be built locally
+            image: user-etl-pipeline:latest
+            # Tell Kubernetes to never try to pull the image from a remote registry
+            imagePullPolicy: Never
+          # This ensures the pod is deleted after it finishes, keeping things clean
+          restartPolicy: OnFailure

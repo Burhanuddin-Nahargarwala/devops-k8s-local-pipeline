@@ -1,0 +1,26 @@
+name: Local ETL Pipeline CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    # VERY IMPORTANT: This tells GitHub to use your local machine
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Build Docker Image Locally
+        run: |
+          docker build -t user-etl-pipeline:latest .
+        # This command builds the image and makes it available in your local Docker Desktop
+
+      - name: Deploy to Local Kubernetes
+        run: |
+          kubectl apply -f kubernetes/etl-cronjob.yaml
+        # Since the runner is on your machine, it already has access to kubectl
+        # and is configured for your docker-desktop cluster.
